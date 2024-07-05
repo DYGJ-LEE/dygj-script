@@ -8,6 +8,7 @@ public class HttpUtils {
 
     /**
      * 以post或get方式调用对方接口方法
+     *
      * @param token
      * @param pathUrl
      * @param data
@@ -30,7 +31,7 @@ public class HttpUtils {
             if (fakeIp) {
                 // 生成随机IP
                 String randomIp = RandomIpUtils.getRandomIp();
-                System.out.println("伪造IP："+randomIp);
+                System.out.println("伪造IP：" + randomIp);
                 // 设置伪造的IP地址
                 conn.setRequestProperty("X-Forwarded-For", randomIp);
             }
@@ -40,7 +41,7 @@ public class HttpUtils {
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-            if(token!=null && !"".equals(token)) {
+            if (token != null && !"".equals(token)) {
                 conn.setRequestProperty("Authorization", token);
             }
             //DoOutput设置是否向httpUrlConnection输出，DoInput设置是否从httpUrlConnection读入，此外发送post请求必须设置这两个
@@ -85,6 +86,51 @@ public class HttpUtils {
             }
         }
         return result;
+    }
+
+    /**
+     * 获取URL输入流信息
+     *
+     * @param token
+     * @param pathUrl
+     * @param requstMethod
+     * @param fakeIp
+     * @return
+     */
+    public static InputStream getUrlInputStream(String token, String pathUrl, String requstMethod, boolean fakeIp) {
+        try {
+            URL url = new URL(pathUrl);
+            //打开和url之间的连接
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            //请求方式
+            conn.setRequestMethod(requstMethod);
+
+            // 是否需要伪造IP
+            if (fakeIp) {
+                // 生成随机IP
+                String randomIp = RandomIpUtils.getRandomIp();
+                System.out.println("伪造IP：" + randomIp);
+                // 设置伪造的IP地址
+                conn.setRequestProperty("X-Forwarded-For", randomIp);
+            }
+
+            //设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            if (token != null && !"".equals(token)) {
+                conn.setRequestProperty("Authorization", token);
+            }
+            //DoOutput设置是否向httpUrlConnection输出，DoInput设置是否从httpUrlConnection读入，此外发送post请求必须设置这两个
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            //获取URLConnection对象对应的输入流
+            return conn.getInputStream();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
