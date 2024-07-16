@@ -45,23 +45,25 @@ public class Main {
 
         // TODO <<<<<<<<<<<<<      手动写入 - 1.文件夹名称     >>>>>>>>>>>>>>>>
         String[] folderNames = {
-                "7.5~7.11——全社",
-                "7.5~7.11——388",
-                "7.5~7.11——88",
-                "7.5~7.11——888",
-                "7.5~7.11——4家包装服务店铺",
-                "6.24~6.27——725、295"
+                "7.12~7.18——全社",
+                "7.12~7.18——388",
+                "7.12~7.18——88",
+                "7.12~7.18——888",
+                "7.12~7.18——4家包装服务店铺",
+                "7.12~7.18——725、295",
+                "7.12~7.18——37成都IY双楠闭店"
         };
         // TODO 3.批量创建素材文件夹
 //        List<SongVo> folderRes = batchAddFolder(folderNames);
         // TODO <<<<<<<<<<<<<      手动写入 - 2.文件夹名称对应序号     >>>>>>>>>>>>>>>>
         Map<String, String> templateMap = new HashMap<>();
-        templateMap.put(folderNames[0], "01、02、03、05、06、07、08、09、01、02、10、11、12、13、14、15、21、22".trim());
-        templateMap.put(folderNames[1], "01、02、03、04、06、07、08、09、01、02、10、11、12、13、14、15、16、17、09、20、21、22".trim());
-        templateMap.put(folderNames[2], "01、02、03、04、06、07、08、09、01、02、10、11、12、13、14、15、18、19、09、20、21、22".trim());
-        templateMap.put(folderNames[3], "01、02、03、05、06、07、08、09、01、02、10、11、12、13、14、15、20、21、22".trim());
-        templateMap.put(folderNames[4], "01、02、03、04、06、07、08、09、01、02、10、11、12、13、14、15、21、22".trim());
-        templateMap.put(folderNames[5], "01、02、03、05、06、07、08、09、01、02、10、11、12、13、14、15、21、22".trim());
+        templateMap.put(folderNames[0], "01、03、04、05、06、07、01、03、08、09、10、11、12、01、03、13、14、21、22".trim());
+        templateMap.put(folderNames[1], "02、03、04、05、06、07、02、03、08、09、10、11、12、02、03、13、14、15、16、19、09、21、22".trim());
+        templateMap.put(folderNames[2], "02、03、04、05、06、07、02、03、08、09、10、11、12、02、03、13、14、17、18、19、09、21、22".trim());
+        templateMap.put(folderNames[3], "01、03、04、05、06、07、01、03、08、09、10、11、12、01、03、13、14、19、21、22".trim());
+        templateMap.put(folderNames[4], "02、03、04、05、06、07、02、03、08、09、10、11、12、02、03、13、14、21、22".trim());
+        templateMap.put(folderNames[5], "01、03、04、05、06、07、01、03、08、09、10、11、12、01、03、13、14、21、22".trim());
+        templateMap.put(folderNames[6], "01、03、04、05、06、07、01、03、08、09、10、11、12、01、03、13、14、20、21、22".trim());
         // TODO 4.构建文件夹中完整数据
 //        Map<String, List<SongVo>> fileMap = buildFileMap(templateMap, list);
         // TODO 5.歌单批量添加文件
@@ -135,8 +137,8 @@ public class Main {
 
             list.get(i).songid = list.get(i).id;
             list.get(i).languagetype = "0";
-            if(!list.get(i).name.startsWith(dateStr)) {
-                list.get(i).name = dateStr + "-" +  (i+1) + "+" + name;
+            if(!list.get(i).name.startsWith(dateStr+"-"+(i+1))) {
+                list.get(i).name = dateStr + "-" + (i+1) + "+" + name;
             }
         }
         System.out.println("\nMyMetaData：" + gson.toJson(list));
@@ -224,17 +226,11 @@ public class Main {
             return null;
         }
         if (list.size() > 1) {
-            // 多个则根据名称+后缀完整匹配
-            list = list.stream().filter(e -> e.name.equals(fileName)).toList();
-//            for(SongVo songVo : list) {
-//                if (songVo.name.split("[.]")[0].equals("")) {
-//                }
-//            }
-            // 获取最新时间文件
-            list.sort((o1, o2) -> o2.createdate.compareTo(o1.createdate));
+            // 多个则根据名称+后缀完整匹配,根据创建时间倒序拍
+            list = list.stream().filter(e -> e.name.equals(fileName)).sorted((o1, o2) -> o2.createdate.compareTo(o1.createdate)).toList();
         }
         System.out.println("findFilesByName：" + gson.toJson(list));
-
+        // 获取最新时间文件
         return list.get(0);
     }
 

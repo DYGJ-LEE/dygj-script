@@ -178,8 +178,9 @@ public class MainSc {
 
             list.get(i).songid = list.get(i).id;
             list.get(i).languagetype = "0";
-            if(!list.get(i).name.startsWith(dateStr)) {
-                list.get(i).name = dateStr + "-" +  (i+1) + "+" + name;
+
+            if(!list.get(i).name.startsWith(dateStr+"-"+(i+1))) {
+                list.get(i).name = dateStr + "-" + (i+1) + "+" + name;
             }
         }
         System.out.println("\nMyMetaData：" + gson.toJson(list));
@@ -264,17 +265,11 @@ public class MainSc {
             return null;
         }
         if (list.size() > 1) {
-            // 多个则根据名称+后缀完整匹配
-            list = list.stream().filter(e -> e.name.equals(fileName)).toList();
-//            for(SongVo songVo : list) {
-//                if (songVo.name.split("[.]")[0].equals("")) {
-//                }
-//            }
-            // 获取最新时间文件
-            list.sort((o1, o2) -> o2.createdate.compareTo(o1.createdate));
+            // 多个则根据名称+后缀完整匹配,根据创建时间倒序拍
+            list = list.stream().filter(e -> e.name.equals(fileName)).sorted((o1, o2) -> o2.createdate.compareTo(o1.createdate)).toList();
         }
         System.out.println("findFilesByName：" + gson.toJson(list));
-
+        // 获取最新时间文件
         return list.get(0);
     }
 

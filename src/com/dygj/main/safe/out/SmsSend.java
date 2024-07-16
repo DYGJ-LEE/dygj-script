@@ -1,17 +1,9 @@
 package com.dygj.main.safe.out;
 
-import com.dygj.entity.ResultVo;
-import com.dygj.entity.SongVo;
 import com.dygj.main.utils.HttpUtils;
-import com.dygj.main.utils.RandomIpUtils;
 import com.google.gson.Gson;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 
@@ -26,7 +18,7 @@ public class SmsSend {
 
     public static void main(String[] args) {
 
-        int count = 5;
+        int count = 20;
         for (int i = 0; i < count; i++) {
             // 获取手机号
             String phone = generateMobileNumber();
@@ -59,7 +51,7 @@ public class SmsSend {
     }
 
     /**
-     * 获取需要修改终端名列表
+     * 发送短信
      *
      * @return
      */

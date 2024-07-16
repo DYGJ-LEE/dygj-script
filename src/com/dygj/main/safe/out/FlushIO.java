@@ -12,13 +12,17 @@ import java.nio.file.StandardCopyOption;
 
 /**
  * 目标：通过伪造IP访问对外共享资源并下载，达到oss服务器流量消耗
- * 地址：http://z.hottermusic.com/resources/4EZbrPeaZ6dM8cMaJCzXxCZQZybaANZY.mp4【189MB】
+ * 地址：http://z.hottermusic.com/resources/4EZbrPeaZ6dM8cMaJCzXxCZQZybaANZY.mp4   【189MB】 * 1 = 27.272秒
+ *      http://z.hottermusic.com/resources/nxnj5kW4Qwh5BmaJs2ZaszHwSSKcDy87.mp3 【2.8MB】 * 10 = 4.188秒
  *
  * @Auther:Lipf
  */
 public class FlushIO {
 
     public static void main(String[] args) {
+        long begin = System.currentTimeMillis();
+        System.out.println("开始时间："+begin+"\n");
+
         int num = 0;
         String url = "http://z.hottermusic.com/resources/4EZbrPeaZ6dM8cMaJCzXxCZQZybaANZY.mp4",
                 saveDir = "C:\\Users\\Administrator\\Desktop\\dowloadFiles";
@@ -36,6 +40,10 @@ public class FlushIO {
             }
         }
         System.out.println("下载结束！");
+
+        long end = System.currentTimeMillis();
+        System.out.println("\n结束时间："+end);
+        System.out.println("共用时："+((end-begin)/1000.0)+"秒");
     }
 
 
