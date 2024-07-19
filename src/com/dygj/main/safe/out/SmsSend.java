@@ -18,12 +18,17 @@ public class SmsSend {
 
     public static void main(String[] args) {
 
-        int count = 20;
+        int count = 30;
         for (int i = 0; i < count; i++) {
             // 获取手机号
             String phone = generateMobileNumber();
-            // 发送验证码
-            sendSms(phone);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // 发送验证码
+                    sendSms(phone);
+                }
+            }).start();
         }
 
     }
