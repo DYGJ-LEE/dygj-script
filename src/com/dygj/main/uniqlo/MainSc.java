@@ -30,16 +30,16 @@ public class MainSc {
 
         System.out.print("请输入token(Authorization)：");
         Scanner scanner = new Scanner(System.in);
-        String tokenInput = scanner.next().trim();
+        String tokenInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
 
         System.out.print("\n请输入userid：");
-        String userIdInput = scanner.next().trim();
+        String userIdInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
 
         System.out.print("\n请输入songlistid：");
-        String songlistidInput = scanner.next().trim();
+        String songlistidInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
 
         System.out.print("\n请仔细确认以上输入无误(y/n)：");
-        String isCommit = scanner.next().trim();
+        String isCommit = scanner.next().replaceAll(" ","").replaceAll("\t","");
         if(!isCommit.equals("y")) {
             System.out.print("\n输入任何键退出");
             scanner.next();
@@ -56,57 +56,64 @@ public class MainSc {
             return;
         }
 
-        // TODO 1.获取歌单模板
-        List<SongVo> list = getMetaData();
+        while(true) {
+            // TODO 1.获取歌单模板
+            List<SongVo> list = getMetaData();
 
-        System.out.print("\n---------------- 二选一 ----------------\n1.更新模板歌单内文件名称\n2.根据模板批量生成文件\n");
-        System.out.print("请选择(1、2）：");
-        String type = scanner.next().trim();
-        if("1".equals(type)) {
-            // TODO 2.更新模板歌单中文件名称
-            batchUpdateFileName(list);
-            System.out.println("\n---------------- 文件名称已成功更新~ ----------------");
-        } else if("2".equals(type)) {
-            System.out.print("\n输入文件夹名称(多个以中文，分割)【例：name1，name2，name3】\n");
-            System.out.print("请输入：");
-            String folderNamesInput = scanner.next().trim();
+            System.out.print("\n当前token："+token+"\n当前userId："+userId+"\n当前songlistid："+songlistid);
+            System.out.print("\n---------------- 二选一 ----------------\n1.更新模板歌单内文件名称\n2.根据模板批量生成文件\n");
+            System.out.print("请选择(1、2）：");
+            String type = scanner.next().replaceAll(" ","").replaceAll("\t","");
+            if("1".equals(type)) {
+                // TODO 2.更新模板歌单中文件名称
+                batchUpdateFileName(list);
+                System.out.println("\n---------------- 文件名称已成功更新~ ----------------");
+            } else if("2".equals(type)) {
+                System.out.print("\n输入文件夹名称(多个以中文，分割)【例：name1，name2，name3】\n");
+                System.out.print("请输入：");
+                String folderNamesInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
 
-            System.out.print("\n按照文件夹名称顺序输入对应文件序号(多个以中文；分割)【例：01、02；05、06；01、05、06】\n");
-            System.out.print("请输入：");
-            String fileNumsInput = scanner.next().trim();
-            if(folderNamesInput == null || "".equals(folderNamesInput) || fileNumsInput == null || "".equals(fileNumsInput)) {
-                System.err.println("error：文件夹名称/对应文件序号输入有误！");
-                System.out.print("\n输入任何键退出");
-                scanner.next();
-                return;
+                System.out.print("\n按照文件夹名称顺序输入对应文件序号(多个以中文；分割)【例：01、02；05、06；01、05、06】\n");
+                System.out.print("请输入：");
+                String fileNumsInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
+                if(folderNamesInput == null || "".equals(folderNamesInput) || fileNumsInput == null || "".equals(fileNumsInput)) {
+                    System.err.println("error：文件夹名称/对应文件序号输入有误！");
+                    System.out.print("\n输入任何键退出");
+                    scanner.next();
+                    return;
+                }
+
+                String[] folderNames = folderNamesInput.split("，");
+                String[] fileNums = fileNumsInput.split("；");
+
+                if(folderNames.length != fileNums.length) {
+                    System.err.println("error：文件夹数量与分配文件数量不一致！");
+                    System.out.print("\n输入任何键退出");
+                    scanner.next();
+                    return;
+                }
+                Map<String, String> templateMap = new HashMap<>();
+                for (int i = 0; i < folderNames.length; i++) {
+                    templateMap.put(folderNames[i], fileNums[i].replaceAll(" ","").replaceAll("\t",""));
+                }
+
+                // TODO 3.批量创建素材文件夹
+                List<SongVo> folderRes = batchAddFolder(folderNames);
+                // TODO 4.构建文件夹中完整数据
+                Map<String, List<SongVo>> fileMap = buildFileMap(templateMap, list);
+                // TODO 5.歌单批量添加文件
+                batchAddFile(folderRes, fileMap);
+
+                System.out.println("\n---------------- 文件已成功生成完毕，可自行检查数据完整性~ ----------------");
+            } else {
+                System.err.println("error：输入内容有误！");
             }
-
-            String[] folderNames = folderNamesInput.split("，");
-            String[] fileNums = fileNumsInput.split("；");
-
-            if(folderNames.length != fileNums.length) {
-                System.err.println("error：文件夹数量与分配文件数量不一致！");
-                System.out.print("\n输入任何键退出");
-                scanner.next();
-                return;
+            System.out.print("\n是否继续(y/n)：");
+            String isNext = scanner.next().replaceAll(" ","").replaceAll("\t","");
+            if(!"y".equals(isNext)) {
+                break;
             }
-            Map<String, String> templateMap = new HashMap<>();
-            for (int i = 0; i < folderNames.length; i++) {
-                templateMap.put(folderNames[i], fileNums[i].trim());
-            }
-
-            // TODO 3.批量创建素材文件夹
-            List<SongVo> folderRes = batchAddFolder(folderNames);
-            // TODO 4.构建文件夹中完整数据
-            Map<String, List<SongVo>> fileMap = buildFileMap(templateMap, list);
-            // TODO 5.歌单批量添加文件
-            batchAddFile(folderRes, fileMap);
-
-            System.out.println("\n---------------- 文件已成功生成完毕，可自行检查数据完整性~ ----------------");
-        } else {
-            System.err.println("error：输入内容有误！");
         }
-
         System.out.print("\n输入任何键退出");
         scanner.next();
     }
