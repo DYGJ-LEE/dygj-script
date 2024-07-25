@@ -30,19 +30,19 @@ public class MainSc {
 
         System.out.print("请输入token(Authorization)：");
         Scanner scanner = new Scanner(System.in);
-        String tokenInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
+        String tokenInput = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
 
         System.out.print("\n请输入userid：");
-        String userIdInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
+        String userIdInput = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
 
         System.out.print("\n请输入songlistid：");
-        String songlistidInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
+        String songlistidInput = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
 
         System.out.print("\n请仔细确认以上输入无误(y/n)：");
-        String isCommit = scanner.next().replaceAll(" ","").replaceAll("\t","");
+        String isCommit = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
         if(!isCommit.equals("y")) {
             System.out.print("\n输入任何键退出");
-            scanner.next();
+            scanner.nextLine();
             return;
         }
 
@@ -52,7 +52,7 @@ public class MainSc {
         if(token == null || "".equals(token) || songlistid == null || "".equals(songlistid) || userId == null || "".equals(userId) ) {
             System.err.println("error：token、songlistid、userid数据不完整！");
             System.out.print("\n输入任何键退出");
-            scanner.next();
+            scanner.nextLine();
             return;
         }
 
@@ -63,7 +63,7 @@ public class MainSc {
             System.out.print("\n当前token："+token+"\n当前userId："+userId+"\n当前songlistid："+songlistid);
             System.out.print("\n---------------- 二选一 ----------------\n1.更新模板歌单内文件名称\n2.根据模板批量生成文件\n");
             System.out.print("请选择(1、2）：");
-            String type = scanner.next().replaceAll(" ","").replaceAll("\t","");
+            String type = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
             if("1".equals(type)) {
                 // TODO 2.更新模板歌单中文件名称
                 batchUpdateFileName(list);
@@ -71,16 +71,20 @@ public class MainSc {
             } else if("2".equals(type)) {
                 System.out.print("\n输入文件夹名称(多个以中文，分割)【例：name1，name2，name3】\n");
                 System.out.print("请输入：");
-                String folderNamesInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
+                String folderNamesInput = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
 
                 System.out.print("\n按照文件夹名称顺序输入对应文件序号(多个以中文；分割)【例：01、02；05、06；01、05、06】\n");
                 System.out.print("请输入：");
-                String fileNumsInput = scanner.next().replaceAll(" ","").replaceAll("\t","");
+                String fileNumsInput = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
                 if(folderNamesInput == null || "".equals(folderNamesInput) || fileNumsInput == null || "".equals(fileNumsInput)) {
                     System.err.println("error：文件夹名称/对应文件序号输入有误！");
-                    System.out.print("\n输入任何键退出");
-                    scanner.next();
-                    return;
+                    System.out.print("\n是否继续(y/n)：");
+                    String isNext = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
+                    if("y".equals(isNext)) {
+                        continue;
+                    } else {
+                        break;
+                    }
                 }
 
                 String[] folderNames = folderNamesInput.split("，");
@@ -88,9 +92,13 @@ public class MainSc {
 
                 if(folderNames.length != fileNums.length) {
                     System.err.println("error：文件夹数量与分配文件数量不一致！");
-                    System.out.print("\n输入任何键退出");
-                    scanner.next();
-                    return;
+                    System.out.print("\n是否继续(y/n)：");
+                    String isNext = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
+                    if("y".equals(isNext)) {
+                        continue;
+                    } else {
+                        break;
+                    }
                 }
                 Map<String, String> templateMap = new HashMap<>();
                 for (int i = 0; i < folderNames.length; i++) {
@@ -109,13 +117,13 @@ public class MainSc {
                 System.err.println("error：输入内容有误！");
             }
             System.out.print("\n是否继续(y/n)：");
-            String isNext = scanner.next().replaceAll(" ","").replaceAll("\t","");
+            String isNext = scanner.nextLine().replaceAll(" ","").replaceAll("\t","");
             if(!"y".equals(isNext)) {
                 break;
             }
         }
         System.out.print("\n输入任何键退出");
-        scanner.next();
+        scanner.nextLine();
     }
 
 
